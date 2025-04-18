@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Crop Prediction Model</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="login">
+    <h1>Crop prediction model</h1>
+    <form id="crop-form">
+      <input type="text" name="Nitrogen" placeholder="Nitrogen" required />
+      <input type="text" name="Phosphorus" placeholder="Phosphorus" required />
+      <input type="text" name="Potassium" placeholder="Potassium" required />
+      <input type="text" name="Temperature" placeholder="Temperature" required />
+      <input type="text" name="Humidity" placeholder="Humidity" required />
+      <input type="text" name="PH" placeholder="PH" required />
+      <input type="text" name="Rainfall" placeholder="Rainfall" required />
+      <button type="submit">Predict</button>
+    </form>
+    <h1 id="predi"></h1>
+  </div>
+
+  <script>
+    const form = document.getElementById('crop-form');
+    const output = document.getElementById('predi');
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(form);
+      const data = {};
+      formData.forEach((value, key) => {
+        data[key.toLowerCase()] = value;
+      });
+
+      try {
+        const response = await fetch('https://your-render-app-url.onrender.com/predict', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        output.innerText = result.prediction;
+      } catch (error) {
+        output.innerText = 'Error: ' + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
